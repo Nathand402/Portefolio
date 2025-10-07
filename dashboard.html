@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dashboard - DS- Express ( Prototype )</title>
+<style>
+  :root{
+    --bg:#f4f6f8;
+    --sidebar:#202428; 
+    --muted:#94a3b8;
+    --card:#ffffff;
+    --blue:#1E88E5;
+    --yellow:#FFC107;
+    --red:#F44336;
+    --green:#4CAF50;
+    --accent:#0ea5a3;
+    --glass: rgba(255,255,255,0.7);
+    font-family: Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:#0f1724}
+
+
+  .app{
+    display:flex;
+    min-height:100vh;
+    gap:20px;
+  }
+
+  
+  .sidebar{
+    width:280px;
+    background:var(--sidebar);
+    color:#fff;
+    padding:22px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:8px;
+  }
+  .brand .logo{
+    width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#111827,#374151);
+    display:flex;align-items:center;justify-content:center;font-weight:700;
+  }
+  .brand h1{font-size:16px;margin:0}
+  .sidebar .section-title{font-size:12px;color:var(--muted);margin-top:6px;margin-bottom:6px}
+
+  .nav{
+    display:flex;flex-direction:column;gap:6px;
+  }
+  .nav-item{
+    display:flex;align-items:center;gap:12px;padding:10px;border-radius:8px;cursor:pointer;color:#e6eef6;
+  }
+  .nav-item:hover{background:rgba(255,255,255,0.03)}
+  .nav-item .icon{
+    width:34px;height:34px;border-radius:6px;background:rgba(255,255,255,0.04);
+    display:flex;align-items:center;justify-content:center;font-size:14px;
+  }
+  .nav-item .label{font-size:14px}
+
+  .collapse{
+    overflow:hidden;
+    transition: max-height .28s ease;
+    max-height:0;
+    margin-left:44px;
+    display:flex;flex-direction:column;gap:6px;
+  }
+  .collapse a{color:#cfe7ff;text-decoration:none;padding:6px 8px;border-radius:6px;font-size:13px}
+  .nav-item.open + .collapse{max-height:240px}
+
+ 
+  main{
+    flex:1;
+    padding:28px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+
+
+  .topbar{
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .searchbox{
+    display:flex;gap:8px;align-items:center;background:var(--card);padding:10px;border-radius:10px;box-shadow:0 1px 3px rgba(2,6,23,0.06);
+    width:480px;
+  }
+  .searchbox input{border:0;outline:0;width:100%;font-size:14px}
+  .actions{display:flex;gap:10px;align-items:center}
+
+  
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:14px;
+  }
+  .card{
+    background:var(--card);
+    padding:18px;border-radius:10px;box-shadow:0 6px 18px rgba(15,23,36,0.06);
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .card .meta{display:flex;flex-direction:column;gap:6px}
+  .card .title{font-size:13px;color:var(--muted)}
+  .card .value{font-weight:700;font-size:18px}
+
+  .chip{width:56px;height:56px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+
+ 
+  .chip.blue{background:linear-gradient(180deg,var(--blue),#0d6fbf)}
+  .chip.yellow{background:linear-gradient(180deg,var(--yellow),#e6a700);color:#111}
+  .chip.red{background:linear-gradient(180deg,var(--red),#b72b27)}
+  .chip.green{background:linear-gradient(180deg,var(--green),#2e8c3e)}
+
+ 
+  .panel{
+    background:var(--card);padding:18px;border-radius:10px;box-shadow:0 6px 18px rgba(15,23,36,0.06);
+  }
+
+  .panel .panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .btn{
+    background:var(--accent);color:white;padding:8px 12px;border-radius:8px;border:0;cursor:pointer;font-weight:600;
+  }
+  .btn.secondary{background:transparent;color:var(--accent);border:1px solid rgba(14,165,163,0.12)}
+
+  table{width:100%;border-collapse:collapse}
+  thead th{text-align:left;color:var(--muted);font-weight:700;font-size:13px;padding:10px 6px;border-bottom:1px solid #eef2f6}
+  tbody td{padding:10px 6px;border-bottom:1px solid #f2f6f9}
+
+  
+  @media (max-width:900px){
+    .sidebar{display:none}
+    .searchbox{width:100%}
+    .cards{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:520px){
+    .cards{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" role="navigation" aria-label="Sidebar">
+    <div class="brand">
+      <div class="logo">DSE</div>
+      <div>
+        <h1>DS- Express</h1>
+        <div style="font-size:12px;color:#94a3b8">Administrateur</div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <div class="nav-item" onclick="toggleOpen(this)">
+        <div class="icon">🏠</div>
+        <div class="label">Tableau de bord</div>
+      </div>
+
+      <div class="nav-item" onclick="toggleOpen(this)">
+        <div class="icon">⚙️</div>
+        <div class="label">Administration</div>
+      </div>
+
+     
+      <div class="nav-item" onclick="toggleOpen(this)">
+        <div class="icon">📦</div>
+        <div class="label">Abonnements</div>
+      </div>
+      <div class="collapse">
+        <a href="#" onclick="openTab(event,'abon-list')">Gestion des abonnements</a>
+        <a href="#" onclick="openTab(event,'abon-nv')">Nouvel abonnement</a>
+      </div>
+
+      
+      <div class="nav-item" onclick="toggleOpen(this)">
+        <div class="icon">💰</div>
+        <div class="label">Capital</div>
+      </div>
+      <div class="collapse">
+        <a href="#" onclick="openTab(event,'cap-summary')">Résumé Capital</a>
+        <a href="#" onclick="openTab(event,'cap-trans')">Transactions</a>
+      </div>
+
+      <div class="nav-item" onclick="toggleOpen(this)">
+        <div class="icon">👥</div>
+        <div class="label">Clients</div>
+      </div>
+
+      <div class="nav-item" onclick="toggleOpen(this)">
+        <div class="icon">🧾</div>
+        <div class="label">Reporting</div>
+      </div>
+
+      <div class="section-title">Personnels</div>
+      <div class="nav-item">
+        <div class="icon">🙋</div>
+        <div class="label">Gestion du personnel</div>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div style="display:flex;gap:12px;align-items:center">
+        <div class="searchbox">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.35-4.35" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <input id="globalSearch" placeholder="Filtrer les clients, abonnements..." oninput="filterTable()" />
+        </div>
+        <div style="font-size:14px;color:var(--muted)">Tableau de bord</div>
+      </div>
+
+      <div class="actions">
+        <div style="text-align:right">
+          <div style="font-size:13px;color:var(--muted)">Bienvenue</div>
+          <div style="font-weight:700">DS- Express</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="cards">
+      <div class="card">
+        <div class="meta">
+          <div class="title">Personnels</div>
+          <div class="value">5</div>
+        </div>
+        <div class="chip blue">P</div>
+      </div>
+
+      <div class="card">
+        <div class="meta">
+          <div class="title">Clients</div>
+          <div class="value"> 900</div>
+        </div>
+        <div class="chip yellow">C</div>
+      </div>
+
+      <div class="card">
+        <div class="meta">
+          <div class="title">Contacts</div>
+          <div class="value">4</div>
+        </div>
+        <div class="chip red">Ct</div>
+      </div>
+
+      <div class="card">
+        <div class="meta">
+          <div class="title">CA 2023</div>
+          <div class="value">124 150 FCFA</div>
+        </div>
+        <div class="chip green">$</div>
+      </div>
+
+      <div class="card">
+        <div class="meta">
+          <div class="title">CA du mois</div>
+          <div class="value">50.000 FCFA</div>
+        </div>
+        <div class="chip blue">M</div>
+      </div>
+
+      <div class="card">
+        <div class="meta">
+          <div class="title">CA du jour</div>
+          <div class="value">10 600 FCFA</div>
+        </div>
+        <div class="chip green">J</div>
+      </div>
+    </div>
+
+    
+    <section id="panel-clients" class="panel" role="region" aria-label="Clients">
+      <div class="panel-header">
+        <div>
+          <h3 style="margin:0">Compte à réabonner aujourd'hui</h3>
+          <div style="font-size:13px;color:var(--muted)">Résultats / Liste clients</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="btn" onclick="notifySelected()">Notifier</button>
+          <button class="btn secondary" onclick="exportCSV()">Exporter</button>
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <input id="tableSearch" placeholder="Par ici la recherche" style="padding:10px;border-radius:8px;border:1px solid #e6eef6;width:100%;font-size:14px" oninput="filterTable()" />
+      </div>
+
+      <div style="overflow:auto">
+        <table id="clientsTable" aria-describedby="table-desc">
+          <thead>
+            <tr>
+              <th>Compte</th>
+              <th>Email</th>
+              <th>Téléphone</th>
+              <th>Statut</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr>
+              <td>DS- Express07</td>
+              <td>digitalshopexpress269@gmail.com</td>
+              <td>+241 76277631</td>
+              <td>Actif</td>
+              <td><input type="checkbox" class="selectRow" /></td>
+            </tr>
+            <tr>
+              <td>DS- Express07</td>
+              <td>digitalshopexpress269@gmail.com</td>
+              <td>+241 07  76277631</td>
+              <td>Actif</td>
+              <td><input type="checkbox" class="selectRow" /></td>
+            </tr>
+            <tr>
+              <td>DS- Express07</td>
+              <td>digitalshopexpress269@gmail.com</td>
+              <td>+241 07 76277631</td>
+              <td>Inactif</td>
+              <td><input type="checkbox" class="selectRow" /></td>
+            </tr>
+            <tr>
+              <td>DS- Express07</td>
+              <td>digitalshopexpress269@gmail.com</td>
+              <td>+241 76277631</td>
+              <td>Actif</td>
+              <td><input type="checkbox" class="selectRow" /></td>
+            </tr>
+            <tr>
+              <td>DS- Express07</td>
+              <td>digitalshopexpress269@gmail.com</td>
+              <td>+241 07 76277631</td>
+              <td>Actif</td>
+              <td><input type="checkbox" class="selectRow" /></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="table-desc" style="display:none">Table des clients</div>
+    </section>
+
+    
+    <section id="panel-tabs" class="panel" style="display:none" aria-live="polite">
+      <div id="abon-list" style="display:none">
+        <h3>Gestion des abonnements</h3>
+        <p style="color:var(--muted)">Liste & actions relatives aux abonnements.</p>
+        <ul>
+          <li>Abonnement Standard — 1 200 FCFA / mois</li>
+          <li>Abonnement Pro — 3 500 FCFA / mois</li>
+        </ul>
+      </div>
+
+      <div id="abon-nv" style="display:none">
+        <h3>Créer un nouvel abonnement</h3>
+        <p style="color:var(--muted)">Formulaire prototype :</p>
+        <form onsubmit="event.preventDefault();alert('Abonnement créé (simulé)');">
+          <input placeholder="Nom abonnement" required style="padding:8px;border-radius:8px;border:1px solid #eef2f6;margin-bottom:8px;width:100%"><br>
+          <input placeholder="Prix (FCFA)" required style="padding:8px;border-radius:8px;border:1px solid #eef2f6;margin-bottom:8px;width:100%"><br>
+          <button class="btn" type="submit">Créer</button>
+        </form>
+      </div>
+
+      <div id="cap-summary" style="display:none">
+        <h3>Résumé Capital</h3>
+        <p style="color:var(--muted)">Capital disponible et récapitulatif.</p>
+        <div style="display:flex;gap:12px;margin-top:10px">
+          <div style="background:var(--card);padding:12px;border-radius:8px;box-shadow:0 6px 18px rgba(15,23,36,0.03);">
+            <div style="font-size:12px;color:var(--muted)">Capital Total</div>
+            <div style="font-weight:700">124 150 FCFA</div>
+          </div>
+          <div style="background:var(--card);padding:12px;border-radius:8px;box-shadow:0 6px 18px rgba(15,23,36,0.03);">
+            <div style="font-size:12px;color:var(--muted)">Disponible</div>
+            <div style="font-weight:700">124 150 FCFA</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="cap-trans" style="display:none">
+        <h3>Transactions Capital</h3>
+        <p style="color:var(--muted)">Historique des mouvements.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+  
+  function toggleOpen(el){
+    el.classList.toggle('open');
+   
+  }
+
+ 
+  function openTab(ev,id){
+    ev.preventDefault();
+    
+    document.getElementById('panel-tabs').style.display = 'block';
+   
+    ['abon-list','abon-nv','cap-summary','cap-trans'].forEach(i=>{
+      const el = document.getElementById(i);
+      if(el) el.style.display = (i===id)?'block':'none';
+    });
+    
+    document.getElementById('panel-tabs').scrollIntoView({behavior:'smooth'});
+  }
+
+  
+  function filterTable(){
+    const q = (document.getElementById('globalSearch').value || document.getElementById('tableSearch').value || '').toLowerCase().trim();
+    const rows = document.querySelectorAll('#clientsTable tbody tr');
+    rows.forEach(r=>{
+      const text = r.innerText.toLowerCase();
+      r.style.display = text.includes(q) ? '' : 'none';
+    });
+  }
+
+  
+  function notifySelected(){
+    const checked = Array.from(document.querySelectorAll('.selectRow')).filter(i=>i.checked);
+    if(checked.length === 0){
+      alert('Sélectionne au moins un client à notifier.');
+      return;
+    }
+    const names = checked.map(ch => ch.closest('tr').cells[0].innerText);
+    alert('Notification envoyée (simulé) à: ' + names.join(', '));
+  }
+
+  
+  function exportCSV(){
+    const rows = Array.from(document.querySelectorAll('#clientsTable tr')).map(tr=>{
+      return Array.from(tr.cells).map(td=>'"'+td.innerText.replace(/"/g,'""')+'"').join(',');
+    }).join('\\n');
+    const blob = new Blob([rows], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'clients.csv'; document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    el.setAttribute('tabindex',0);
+    el.addEventListener('keypress', e=>{
+      if(e.key==='Enter') toggleOpen(el);
+    });
+  });
+</script>
+</body>
+</html>
