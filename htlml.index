@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Shop Express - Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-content">
+            <div class="logo">
+                <h1><i class="fas fa-shop"></i> DSE Manager</h1>
+            </div>
+            <ul class="menu-items">
+                <li><a href="index.html" class="active"><i class="fas fa-home"></i> Tableau de bord</a></li>
+                <li><a href="gestion-clients.html"><i class="fas fa-users"></i> Gestion Clients</a></li>
+                <li><a href="parametres.html"><i class="fas fa-cog"></i> Paramètres</a></li>
+                <li><a href="notification.html"><i class="fas fa-bell"></i> Notifications</a></li>
+            </ul>
+            <div class="tech-lines-container" id="tech-lines-container"></div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="mobile-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+        
+        <h1>Bienvenue sur Digital Shop Express Manager</h1>
+        <div class="dashboard-content">
+            <!-- Dashboard: cartes dynamiques et tableau annuel -->
+            <div class="cards-row" id="dashboardCards">
+                <div class="card-mini" style="--accent:#10b981">
+                    <div class="icon" style="background:linear-gradient(135deg,#d1fae5,#10b981); color:#065f46">📋</div>
+                    <div class="body">
+                        <h3><span class="count" id="totalClients">0</span> <span class="small-muted">clients</span></h3>
+                        <p class="small-muted">Total clients enregistrés <span class="emoji-sticker">👥</span></p>
+                    </div>
+                </div>
+
+                <div class="card-mini" style="--accent:#f59e0b">
+                    <div class="icon" style="background:linear-gradient(135deg,#fff7ed,#f59e0b); color:#7c2d12">⚠️</div>
+                    <div class="body">
+                        <h3><span class="count" id="inactiveClients">0</span> <span class="small-muted">inactifs</span></h3>
+                        <p class="small-muted">Clients inactifs / expirés <span class="emoji-sticker">🛑</span></p>
+                    </div>
+                </div>
+
+                <div class="card-mini" style="--accent:#3b82f6">
+                    <div class="icon" style="background:linear-gradient(135deg,#dbecff,#3b82f6); color:#052f66">💰</div>
+                    <div class="body">
+                        <h3><span class="count" id="annualSum">0</span> <span class="small-muted">FCFA</span></h3>
+                        <p class="small-muted">Somme annuelle estimée <span class="emoji-sticker">📈</span></p>
+                    </div>
+                </div>
+
+                <div class="card-mini" style="--accent:#8b5cf6">
+                    <div class="icon" style="background:linear-gradient(135deg,#f3e8ff,#8b5cf6); color:#3c1361">✨</div>
+                    <div class="body">
+                        <h3><span class="count" id="thisYearClients">0</span> <span class="small-muted">cette année</span></h3>
+                        <p class="small-muted">Nouveaux / renouvellements <span class="emoji-sticker">🎉</span></p>
+                    </div>
+                </div>
+                <!-- Nouveaux KPI ETVPro et alertes -->
+                <div class="card-mini" style="--accent:#06b6d4">
+                    <div class="icon" style="background:linear-gradient(135deg,#e6f9fb,#06b6d4); color:#064e63">✅</div>
+                    <div class="body">
+                        <h3><span class="count" id="activeClients">0</span> <span class="small-muted">actifs</span></h3>
+                        <p class="small-muted">Clients actuellement actifs <span class="emoji-sticker">🔔</span></p>
+                    </div>
+                </div>
+
+                <div class="card-mini" style="--accent:#ef4444">
+                    <div class="icon" style="background:linear-gradient(135deg,#ffecec,#ef4444); color:#6b0b0b">⏳</div>
+                    <div class="body">
+                        <h3><span class="count" id="expiringSoon">0</span> <span class="small-muted">fin dans 5j</span></h3>
+                        <p class="small-muted">Abonnements expirant sous 5 jours <span class="emoji-sticker">⚠️</span></p>
+                    </div>
+                </div>
+
+                <div class="card-mini" style="--accent:#f97316">
+                    <div class="icon" style="background:linear-gradient(135deg,#fff4e6,#f97316); color:#7a2e0b">📺</div>
+                    <div class="body">
+                        <h3><span class="count" id="totalETVPro">0</span> <span class="small-muted">ETVPro</span></h3>
+                        <p class="small-muted">Clients disposant d'un code ETVPro <span class="emoji-sticker">📦</span></p>
+                    </div>
+                </div>
+
+                <div class="card-mini" style="--accent:#ef9a9a">
+                    <div class="icon" style="background:linear-gradient(135deg,#fff1f1,#ef9a9a); color:#6b0b0b">🚫</div>
+                    <div class="body">
+                        <h3><span class="count" id="inactiveETVPro">0</span> <span class="small-muted">inactifs ETVPro</span></h3>
+                        <p class="small-muted">Codes ETVPro inactifs <span class="emoji-sticker">🔒</span></p>
+                    </div>
+                </div>
+
+                <div class="card-mini" style="--accent:#60a5fa">
+                    <div class="icon" style="background:linear-gradient(135deg,#eaf2ff,#60a5fa); color:#08306b">🎯</div>
+                    <div class="body">
+                        <h3><span class="count" id="activeETVPro">0</span> <span class="small-muted">actifs ETVPro</span></h3>
+                        <p class="small-muted">Clients ETVPro encore actifs <span class="emoji-sticker">🏷️</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-table">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111827;color:#fff">
+                    <div><strong>Statistiques des plateformes</strong> <span class="small-muted">(ventes)</span></div>
+                    <div style="display:flex;gap:12px;align-items:center">
+                        <div class="refresh-btn" id="refreshDashboard">🔄 Rafraîchir</div>
+                    </div>
+                </div>
+                <table id="streamingStatsTable">
+                    <thead>
+                        <tr>
+
+                        <th>Plateforme</th>
+                            <th>Clients actifs</th>
+                            <th>Total clients</th>
+                            <th>Revenu mensuel</th>
+                            <th>% du total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Remplissage dynamique -->
+                    </tbody>
+                    <tfoot>
+                        <tr style="font-weight:600;background:#f8fafc">
+                            <td>Total</td>
+                            <td id="totalActiveClients">-</td>
+                            <td id="totalAllClients">-</td>
+                            <td id="totalRevenue">-</td>
+                            <td>100%</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    
+  
+  
+  
+  
+      
+
+      
+
+  
+      
+        
+      
+          
+        
+
+      
+            
+              
+
+      
+  
