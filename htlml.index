@@ -7,6 +7,149 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* Styles communs pour tous les fichiers */
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #60a5fa;
+            --sidebar-width: 260px;
+            --header-height: 60px;
+            --sidebar-bg: #111827;
+            --sidebar-hover: #1f2937;
+            --text-light: #f3f4f6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8fafc;
+            display: flex;
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--sidebar-bg);
+            position: fixed;
+            left: 0;
+            top: 0;
+            color: var(--text-light);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        
+        .sidebar-content {
+            position: relative;
+            height: 100%;
+        }
+        
+        .logo {
+            padding: 1.5rem;
+            background: var(--primary-dark);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+        }
+        
+        .menu-items {
+            list-style: none;
+            padding: 1rem 0;
+        }
+        
+        .menu-items li a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-items li a:hover {
+            background: var(--sidebar-hover);
+            color: var(--primary-light);
+        }
+        
+        .menu-items li a i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .tech-lines-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 120px);
+            overflow: hidden;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* Main content styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            color: var(--sidebar-bg);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+        }
+
+        /* Dashboard cards styles */
+        .cards-row { display:flex; gap:16px; flex-wrap:wrap; margin:18px 0; }
+        .card-mini {
+            flex:1 1 220px;
+            background:linear-gradient(135deg,#fff,#f7f9fc);
+            border-radius:12px;
+            padding:18px;
+            box-shadow:0 6px 18px rgba(0,0,0,0.06);
+            display:flex;align-items:center;gap:12px;
+        }
+        .card-mini .icon { font-size:28px; width:56px; height:56px; border-radius:10px; display:flex;align-items:center;justify-content:center; }
+        .card-mini .body { flex:1 }
+        .card-mini h3 { margin:0; font-size:20px }
+        .card-mini p { margin:4px 0 0;color:#6b7280 }
+        .emoji-sticker { font-size:26px }
+        .dashboard-table { margin-top:18px; border-radius:8px; overflow:hidden; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
+        .dashboard-table table { width:100%; border-collapse:collapse; }
+        .dashboard-table thead { background:#111827; color:#fff }
+        .dashboard-table th, .dashboard-table td { padding:10px 12px; border-bottom:1px solid #e6eef8; text-align:left }
+        .small-muted { color:#6b7280; font-size:13px }
+        .count { font-weight:700; font-size:22px }
+        .refresh-btn { cursor:pointer; color:#2563eb; font-weight:600 }
     </style>
 </head>
 <body>
@@ -15,16 +158,18 @@
         <div class="sidebar-content">
             <div class="logo">
                 <h1><i class="fas fa-shop"></i> DSE Manager</h1>
-    </div>
-    <ul class="menu-items">
-    <li><a href="index.html" class="active"><i class="fas fa-home"></i> Tableau de bord</a></li>
-    <li><a href="gestion-clients.html"><i class="fas fa-users"></i> Gestion Clients</a></li>
-    <li><a href="parametres.html"><i class="fas fa-cog"></i> Paramètres</a></li>
-    <li><a href="notification.html"><i class="fas fa-bell"></i> Notifications</a></li>
-        </ul>
-        <div class="tech-lines-container" id="tech-lines-container"></div>
+            </div>
+            <ul class="menu-items">
+                <li><a href="index.html" class="active"><i class="fas fa-home"></i> Tableau de bord</a></li>
+                <li><a href="gestion-clients.html"><i class="fas fa-users"></i> Gestion Clients</a></li>
+                <li><a href="parametres.html"><i class="fas fa-cog"></i> Paramètres</a></li>
+                <li><a href="notification.html"><i class="fas fa-bell"></i> Notifications</a></li>
+            </ul>
+            <div class="tech-lines-container" id="tech-lines-container"></div>
         </div>
     </div>
+
+    <!-- Main Content -->
     <div class="main-content">
         <div class="mobile-toggle">
             <i class="fas fa-bars"></i>
@@ -117,8 +262,7 @@
                 <table id="streamingStatsTable">
                     <thead>
                         <tr>
-
-                        <th>Plateforme</th>
+                            <th>Plateforme</th>
                             <th>Clients actifs</th>
                             <th>Total clients</th>
                             <th>Revenu mensuel</th>
@@ -141,7 +285,210 @@
             </div>
         </div>
     </div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Création des lignes technologiques animées
+        function createTechLine() {
+            const container = document.getElementById('tech-lines-container');
+            if (!container) return;
+            
+            const line = document.createElement('div');
+            line.className = 'tech-line';
+            line.style.left = Math.random() * 100 + '%';
+            line.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            line.style.opacity = Math.random() * 0.5 + 0.3;
+            container.appendChild(line);
+            
+            // Supprimer la ligne après l'animation
+            setTimeout(() => {
+                if (line.parentNode) {
+                    line.parentNode.removeChild(line);
+                }
+            }, 5000);
+        }
+
+        // Créer plusieurs lignes pour un meilleur effet
+        document.addEventListener('DOMContentLoaded', function() {
+            // Créer des lignes initiales
+            for (let i = 0; i < 15; i++) { 
+                setTimeout(createTechLine, Math.random() * 2000); 
+            }
+            
+            // Continuer à créer des lignes périodiquement
+            setInterval(createTechLine, 300);
+        });
+    </script>
     
+    <style>
+        .tech-line {
+            position: absolute;
+            top: 100%;
+            width: 2px;
+            height: 60px; /* Longueur réduite des lignes */
+            background: rgba(0, 255, 229, 0.7);
+            animation: moveUp 3s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes moveUp {
+            from {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            to {
+                transform: translateY(-400px); /* Distance réduite */
+                opacity: 0;
+            }
+        }
+    </style>
+    <script>
+        // Dashboard dynamic population (reads clients from localStorage)
+        function parseMontant(m) {
+            if (!m) return 0;
+            // remove non digits
+            const digits = String(m).replace(/[^0-9]/g, '');
+            return digits ? parseInt(digits, 10) : 0;
+        }
+
+        function animateCount(el, target) {
+            const start = 0;
+            const duration = 600;
+            const startTime = performance.now();
+            function frame(now) {
+                const progress = Math.min((now - startTime) / duration, 1);
+                const value = Math.floor(start + (target - start) * progress);
+                el.textContent = value.toLocaleString('fr-FR');
+                if (progress < 1) requestAnimationFrame(frame);
+            }
+            requestAnimationFrame(frame);
+        }
+
+        function updateDashboard() {
+            const raw = localStorage.getItem('clientsData');
+            let clients = [];
+            try { clients = raw ? JSON.parse(raw) : []; } catch(e) { clients = []; }
+
+            const total = clients.length;
+            const inactive = clients.filter(c => c.statut && c.statut !== 'Actif').length;
+
+            const now = new Date();
+            const year = now.getFullYear();
+
+            const yearClients = clients.filter(c => {
+                if (!c.date_expiration) return false;
+                const d = new Date(c.date_expiration);
+                return d.getFullYear() === year;
+            });
+
+            // Somme annuelle: sum des montants des clients dont la date_expiration est cette année
+            const sum = yearClients.reduce((acc, c) => acc + parseMontant(c.montant), 0);
+
+            // Clients actifs
+            const activeCount = clients.filter(c => c.statut === 'Actif').length;
+
+            // Expirant dans 5 jours (y compris aujourd'hui)
+            const inFiveDays = clients.filter(c => {
+                if (!c.date_expiration) return false;
+                const d = new Date(c.date_expiration);
+                const diff = (d.setHours(0,0,0,0) - new Date().setHours(0,0,0,0)) / (1000*60*60*24);
+                return diff >= 0 && diff <= 5;
+            }).length;
+
+            // ETVPro counts: client total, inactive, actif
+            const hasETV = clients.filter(c => c.code_etvpro && String(c.code_etvpro).trim() !== '');
+            const totalETVPro = hasETV.length;
+            const inactiveETVPro = hasETV.filter(c => c.statut !== 'Actif').length;
+            const activeETVPro = hasETV.filter(c => c.statut === 'Actif').length;
+
+            // Render counts
+            const totalEl = document.getElementById('totalClients');
+            const inactiveEl = document.getElementById('inactiveClients');
+            const annualEl = document.getElementById('annualSum');
+            const thisYearEl = document.getElementById('thisYearClients');
+
+            animateCount(totalEl, total);
+            animateCount(inactiveEl, inactive);
+            animateCount(annualEl, sum);
+            animateCount(thisYearEl, yearClients.length);
+
+            // animate new counts
+            const activeEl = document.getElementById('activeClients');
+            const expiringEl = document.getElementById('expiringSoon');
+            const totalEtvEl = document.getElementById('totalETVPro');
+            const inactiveEtvEl = document.getElementById('inactiveETVPro');
+            const activeEtvEl = document.getElementById('activeETVPro');
+
+            animateCount(activeEl, activeCount);
+            animateCount(expiringEl, inFiveDays);
+            animateCount(totalEtvEl, totalETVPro);
+            animateCount(inactiveEtvEl, inactiveETVPro);
+            animateCount(activeEtvEl, activeETVPro);
+
+            // Calcul et affichage des statistiques de streaming
+            const tbody = document.querySelector('#streamingStatsTable tbody');
+            tbody.innerHTML = '';
+
+            // Regrouper les clients par plateforme
+            const platformStats = {};
+            clients.forEach(client => {
+                const platform = (client.plateforme || 'Non spécifié').trim();
+                if (!platformStats[platform]) {
+                    platformStats[platform] = {
+                        total: 0,
+                        active: 0,
+                        revenue: 0
+                    };
+                }
+                platformStats[platform].total++;
+                if (client.statut === 'Actif') {
+                    platformStats[platform].active++;
+                    platformStats[platform].revenue += parseMontant(client.montant);
+                }
+            });
+
+            // Calculer les totaux
+            let totalActive = 0;
+            let totalClients = 0;
+            let totalRevenue = 0;
+            Object.values(platformStats).forEach(stats => {
+                totalActive += stats.active;
+                totalClients += stats.total;
+                totalRevenue += stats.revenue;
+            });
+
+            // Trier les plateformes par revenu
+            const sortedPlatforms = Object.entries(platformStats)
+                .sort(([,a], [,b]) => b.revenue - a.revenue);
+
+            // Remplir le tableau
+            sortedPlatforms.forEach(([platform, stats]) => {
+                const tr = document.createElement('tr');
+                const percentage = totalRevenue ? ((stats.revenue / totalRevenue) * 100).toFixed(1) : '0.0';
+                tr.innerHTML = `
+                    <td><strong>${platform}</strong></td>
+                    <td>${stats.active}</td>
+                    <td>${stats.total}</td>
+                    <td>${stats.revenue.toLocaleString('fr-FR')} FCFA</td>
+                    <td>${percentage}%</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Mettre à jour les totaux
+            document.getElementById('totalActiveClients').textContent = totalActive;
+            document.getElementById('totalAllClients').textContent = totalClients;
+            document.getElementById('totalRevenue').textContent = `${totalRevenue.toLocaleString('fr-FR')} FCFA`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboard();
+            document.getElementById('refreshDashboard').addEventListener('click', updateDashboard);
+        });
+    </script>
+</body>
+</html> 
     
   
   
